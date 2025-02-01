@@ -1,0 +1,43 @@
+[ ca ]
+default_ca = CA_default
+
+[ CA_default ]
+dir = ./certs
+certs = $dir
+new_certs_dir = $dir
+database = $dir/index.txt
+serial = $dir/serial
+private_key = $dir/ca.key
+certificate = $dir/ca.crt
+default_days = 365
+default_md = sha256
+policy = policy_match
+x509_extensions = usr_cert
+
+[ policy_match ]
+countryName = match
+stateOrProvinceName = match
+organizationName = match
+organizationalUnitName = optional
+commonName = supplied
+emailAddress = optional
+
+[ usr_cert ]
+basicConstraints = CA:FALSE
+nsCertType = client, server, email
+keyUsage = nonRepudiation, digitalSignature, keyEncipherment
+extendedKeyUsage = serverAuth, clientAuth
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid,issuer
+
+[ v3_ca ]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
+
+[ v3_intermediate_ca ]
+subjectKeyIdentifier = hash
+authorityKeyIdentifier = keyid:always,issuer
+basicConstraints = critical, CA:true, pathlen:0
+keyUsage = critical, digitalSignature, cRLSign, keyCertSign
