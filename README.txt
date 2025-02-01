@@ -24,8 +24,8 @@ Optional Features
 
 ## Installation
 1. Clone the repository:
-   git clone https://github.com/darshgarg7/New_Cert.git
-   cd New_Cert
+   git clone https://github.com/darshgarg7/TLS-Certificate_Generator.git
+   cd TLS-Certificate_Generator
 
 2. Install dependencies:
     brew install openssl certbot
@@ -98,7 +98,7 @@ Verift Deployment:
 ## Security Audit
 Generate a security report using Qualys SSL Labs:
 
-testssl.sh https://myproject.local
+testssl.sh https://TLS-Certificate_Generator.local
 
     - Common Vulnerabilities to Check:
         Weak cipher suites (e.g., DES, RC4).
