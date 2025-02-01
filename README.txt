@@ -21,6 +21,7 @@ Optional Features
 - OpenSSL (Install via Homebrew: `brew install openssl`)
 - Docker and Kubernetes (optional)
 - Certbot for Let's Encrypt integration (`brew install certbot`)
+- Look through the files for areas where you have to add your own paths
 
 ## Installation
 1. Clone the repository:
