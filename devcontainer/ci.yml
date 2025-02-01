@@ -1,0 +1,38 @@
+name: CI Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-and-deploy:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
+        run: |
+          brew update
+          brew install openssl certbot kubectl
+
+      - name: Run Tests
+        run: ./tests/test_generate_cert.sh
+
+      - name: Configure Kubernetes
+        run: |
+          mkdir -p $HOME/.kube
+          echo "$KUBECONFIG_CONTENT" > $HOME/.kube/config
+        env:
+          KUBECONFIG_CONTENT: ${{ secrets.KUBECONFIG }}
+
+      - name: Deploy TLS Secret
+        run: kubectl apply -f k8s/tls-secret.yaml
+
+      - name: Deploy TLS Ingress
+        run: kubectl apply -f k8s/tls-ingress.yaml

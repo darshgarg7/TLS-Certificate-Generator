@@ -1,0 +1,19 @@
+version: '3.8'
+
+services:
+  tls-generator:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: tls-generator
+    ports:
+      - "443:443" # Expose port 443 for HTTPS
+    volumes:
+      - .:/workspace # Mount the project directory into the container
+    working_dir: /workspace
+    environment:
+      - OPENSSL_CONF=/workspace/config/openssl.cnf
+    command: bash -c "chmod +x scripts/*.sh && tail -f /dev/null" # Keep the container running
+    tty: true
+    stdin_open: true
+    
