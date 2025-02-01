@@ -9,7 +9,7 @@ Core Features
 Advanced Security :
 - Mutual TLS (mTLS) for client-server authentication.
 - Certificate revocation using CRLs and OCSP.
-- Key rotation policies for expired or compromised keys.
+- Key rotation policies for expired or compromised keys. (Automated Annual Rotations, Email Notifications, and Certificate Validation.)
 - Comprehensive Testing : Automated tests for certificate validation, expiration, and SAN verification.
 Optional Features
 - Post-Quantum Cryptography : Experimental support using Open Quantum Safe (liboqs).
