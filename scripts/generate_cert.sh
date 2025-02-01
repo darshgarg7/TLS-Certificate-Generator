@@ -52,7 +52,7 @@ openssl genpkey -algorithm kyber512 -out certs/server.key || handle_error "Faile
 openssl req -new \
     -key certs/server.key \
     -out certs/server.csr \
-    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=myproject.local" \
+    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=TLS-Certificate-Generator.local" \
     -config config/server.ext || handle_error "Failed to generate Server CSR."
 # Sign Server CSR with Intermediate CA
 openssl x509 -req \
