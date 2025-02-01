@@ -44,6 +44,10 @@ Rotate keys:
     chmod +x key_rotation.sh 
     ./scripts/rotate_keys.sh
 
+   # add Cron Job to automate key rotation (runs midnight on Jan 1st annually by default)
+      chmod +x setup_cron.sh
+      ./scripts/setup_cron.sh
+
 Clean up generated files:
     chmod +x scripts/cleanup.sh
     ./scripts/cleanup.sh
