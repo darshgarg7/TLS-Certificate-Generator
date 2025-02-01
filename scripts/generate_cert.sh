@@ -20,7 +20,7 @@ openssl req -x509 -new -nodes \
     -sha256 \
     -days 3650 \
     -out certs/root-ca.crt \
-    -subj "/C=US/ST=California/L=San Francisco/O=My Cyber Project/CN=My Root CA" \
+    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=My Root CA" \
     -extensions v3_ca \
     -config config/ca.cnf \
     -passin file:<(echo "MySecurePassword") || handle_error "Failed to generate Root CA certificate."
@@ -38,7 +38,7 @@ openssl genpkey -algorithm RSA -out certs/intermediate-ca.key -aes256 -pass pass
 openssl req -new \
     -key certs/intermediate-ca.key \
     -out certs/intermediate-ca.csr \
-    -subj "/C=US/ST=California/L=San Francisco/O=My Cyber Project/CN=My Intermediate CA" \
+    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=My Intermediate CA" \
     -passin file:<(echo "MySecurePassword") || handle_error "Failed to generate Intermediate CA CSR."
 
 # Sign Intermediate CA CSR with Root CA
@@ -67,7 +67,7 @@ openssl genpkey -algorithm RSA -out certs/server.key || handle_error "Failed to 
 openssl req -new \
     -key certs/server.key \
     -out certs/server.csr \
-    -subj "/C=US/ST=California/L=San Francisco/O=My Cyber Project/CN=myproject.local" \
+    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=myproject.local" \
     -config config/server.ext || handle_error "Failed to generate Server CSR."
 
 # Sign Server CSR with Intermediate CA
@@ -96,7 +96,7 @@ openssl ecparam -genkey -name secp384r1 -out certs/wildcard.key || handle_error 
 openssl req -new \
     -key certs/wildcard.key \
     -out certs/wildcard.csr \
-    -subj "/C=US/ST=California/L=San Francisco/O=My Cyber Project/CN=*.myproject.local" \
+    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=*.myproject.local" \
     -config config/server.ext || handle_error "Failed to generate Wildcard CSR."
 
 # Sign Wildcard CSR with Intermediate CA
