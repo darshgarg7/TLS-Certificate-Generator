@@ -3,9 +3,12 @@
 # ================================
 # Configuration (Change as needed)
 # ================================
-DOMAIN="New_Cert.local"
-EMAIL="darsh.garg@gmail.com"
-LOG_FILE="$HOME/Library/Logs/certbot_request.log"  # Log file location
+DOMAIN="TLS-Certificate_Generator.local"
+EMAIL="<enter your email here>"
+LOG_DIR="logs"  # Subdirectory for logs
+LOG_FILE="$LOG_DIR/certbot_request.log"
+
+mkdir -p "$LOG_DIR"
 
 log() {
     local message="$1"
