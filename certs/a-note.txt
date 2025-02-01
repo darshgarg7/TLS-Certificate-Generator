@@ -1,0 +1,3 @@
+NOTE:
+
+This directory is where the generated certs/scripts are outputted :)
