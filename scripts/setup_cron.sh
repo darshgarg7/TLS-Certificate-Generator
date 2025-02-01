@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Path to the key rotation script
-SCRIPT_PATH="/path/to/key_rotation.sh"
-LOG_PATH="/path/to/key_rotation.log"
+SCRIPT_PATH="<add your path to>/TLS-Certificate-Generator/scripts/rotate_keys.sh"
+LOG_PATH="$HOME/Library/Logs/key_rotation.log"
 
 # Add the cron job
 CRON_JOB="0 0 1 1 * $SCRIPT_PATH >> $LOG_PATH 2>&1"
