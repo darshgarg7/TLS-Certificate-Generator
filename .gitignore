@@ -1,0 +1,87 @@
+# ====================
+# General Files
+# ====================
+# Ignore temporary and system-generated files
+*.log
+*.tmp
+*.bak
+*.swp
+*.DS_Store
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+*.pyo
+
+# ====================
+# Certificates and Keys
+# ====================
+# Exclude all generated certificates, keys, and related files
+certs/*.key       # Private keys
+certs/*.crt       # Certificates
+certs/*.csr       # Certificate signing requests
+certs/*.pem       # PEM files
+certs/*.srl       # Serial files
+certs/index.txt   # OpenSSL database index
+certs/serial      # OpenSSL serial file
+
+# Optional: If you want to exclude the entire `certs/` directory
+# certs/
+
+# ====================
+# Blockchain Data
+# ====================
+# Exclude blockchain-related data (e.g., hashes, logs)
+blockchain_hashes/
+blockchain_logs/
+logs/*.log
+
+# ====================
+# Build Artifacts
+# ====================
+# Ignore Docker build artifacts
+.dockerignore
+Dockerfile
+docker-compose.yml
+docker-compose.override.yml
+
+# Ignore Kubernetes deployment artifacts (if they are auto-generated)
+k8s/*.yaml
+k8s/*.yml
+
+# ====================
+# Dependencies
+# ====================
+# Ignore dependency directories and lock files
+node_modules/
+vendor/
+package-lock.json
+yarn.lock
+Pipfile.lock
+
+# ====================
+# IDE and Editor Files
+# ====================
+# Ignore IDE-specific files
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ====================
+# Secrets and Sensitive Data
+# ====================
+# Exclude sensitive files (e.g., API keys, passwords)
+.env
+*.env
+*.env.local
+secrets/
+passwords.txt
+
+# ====================
+# Testing Artifacts
+# ====================
+# Ignore test output files
+tests/output/
+tests/results/
+coverage/
