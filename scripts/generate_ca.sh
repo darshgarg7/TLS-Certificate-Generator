@@ -60,7 +60,7 @@ openssl req -x509 -new -nodes \
     -sha256 \
     -days "$VALIDITY_DAYS" \
     -out "$CA_CERT" \
-    -subj "/C=US/ST=California/L=San Francisco/O=My Cyber Project/CN=$CA_NAME" \
+    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=$CA_NAME" \
     -passin pass:"$PASSPHRASE" || handle_error "Failed to generate CA certificate."
 
 echo "CA certificate generated successfully: $CA_CERT"
