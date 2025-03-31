@@ -13,12 +13,14 @@ Advanced Security :
 - Comprehensive Testing : Automated tests for certificate validation, expiration, and SAN verification.
 Optional Features :
 - Blockchain-Based Certificate Hashing : Immutable records for auditing and compliance.
+- Automated Certificate Issuance
 
 
 ## Prerequisites
 - macOS or Linux
 - OpenSSL (Install via Homebrew: `brew install openssl`)
 - Docker and Kubernetes (optional)
+- brew install certbot (optional) 
 - Look through the files for areas where you have to add your own paths
 
 ## Installation
@@ -27,7 +29,7 @@ Optional Features :
    cd TLS-Certificate_Generator
 
 2. Install dependencies:
-    brew install openssl
+    brew install openssl certbot
 
 ## Usage
 Generate a Root CA:
@@ -53,6 +55,9 @@ Clean up generated files:
         
         - you can specify a custom directory for cleanup:
         ./scripts/cleanup.sh /path/to/custom/directory
+
+Automate Certificate Issuance:
+   ./scripts/letsencrypt.sh
 
 ## Testing
 Run the test script to validate the certificate generation process:
