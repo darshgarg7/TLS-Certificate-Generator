@@ -59,6 +59,21 @@ Clean up generated files:
 Automate Certificate Issuance:
    ./scripts/letsencrypt.sh
 
+
+Manage revoked certificates (generate a CRL file and configure server to use it):  
+
+# Create a CRL file  
+openssl ca -config config/ca.cnf \  
+    -gencrl \  
+    -out certs/crl.pem \  
+    -crldays 30  
+        
+   Verify CRL:  
+   openssl crl -in certs/crl.pem -text -noout  
+     
+   Update Server Configuration:  
+   ssl_crl /path/to/certs/crl.pem;  
+
 ## Testing
 Run the test script to validate the certificate generation process:
     chmod +x tests/test_generate_cert.sh
