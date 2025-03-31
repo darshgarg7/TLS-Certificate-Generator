@@ -14,6 +14,7 @@ Advanced Security :
 Optional Features :
 - Blockchain-Based Certificate Hashing : Immutable records for auditing and compliance.
 - Automated Certificate Issuance
+- HashiCorp Vault Integration
 
 
 ## Prerequisites
@@ -21,6 +22,7 @@ Optional Features :
 - OpenSSL (Install via Homebrew: `brew install openssl`)
 - Docker and Kubernetes (optional)
 - brew install certbot (optional) 
+- brew install vault (optional)
 - Look through the files for areas where you have to add your own paths
 
 ## Installation
@@ -29,7 +31,7 @@ Optional Features :
    cd TLS-Certificate_Generator
 
 2. Install dependencies:
-    brew install openssl certbot
+    brew install openssl certbot vault
 
 ## Usage
 Generate a Root CA:
@@ -60,7 +62,7 @@ Automate Certificate Issuance:
    ./scripts/letsencrypt.sh
 
 
-Manage revoked certificates:  
+## Manage revoked certificates:  
 
 for apple silicon mac go to:
 - /opt/homebrew/etc/nginx/nginx.conf
@@ -112,6 +114,19 @@ This ensures immutability and transparency for certificate verification.
 
     2. Verify a Hash:
     ./scripts/blockchain_hash.sh verify certs/ca.crt
+
+## HashiCorp Vault
+- brew install vault jq
+- vault server -dev
+- export VAULT_ADDR=http://127.0.0.1:8200
+- export VAULT_TOKEN=myroot
+- vault secrets enable -path=secret kv-v2
+store a secret:
+- ./scripts/vault_integration.sh store ca_private_key certs/ca.key
+retrieve a secret:
+- ./scripts/vault_integration.sh retrieve ca_private_key certs/ca.key
+help menu (if needed lol):
+- ./scripts/vault_integration.sh --help
 
 ## Deployment
 Build the Docker image:
