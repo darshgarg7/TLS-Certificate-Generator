@@ -100,7 +100,7 @@ Deploy to Kubernetes:
     kubectl apply -f k8s/tls-secret.yaml
     kubectl apply -f k8s/tls-ingress.yaml
 
-Verift Deployment:
+Verify Deployment:
     kubectl get ingress
 
 ## Security Audit
