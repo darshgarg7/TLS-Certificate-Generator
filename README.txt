@@ -35,6 +35,7 @@ Optional Features :
 
 ## Usage
 Generate a Root CA:
+    chmod +x scripts/generate_ca.sh
     ./scripts/generate_ca.sh
 
 Generate a server certificate (RSA):
