@@ -35,7 +35,7 @@ Optional Features :
 Generate a Root CA:
     ./scripts/generate_ca.sh
 
-Generate a server certificate:
+Generate a server certificate (RSA):
     ./scripts/generate_cert.sh
 
 Automate certificate issuance with Let's Encrypt:
