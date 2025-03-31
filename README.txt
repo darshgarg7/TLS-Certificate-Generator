@@ -24,6 +24,7 @@ Optional Features :
 - brew install certbot (optional) 
 - brew install vault (optional)
 - Look through the files for areas where you have to add your own paths
+- run command in terminal: chmod +x ./scripts/*.sh
 
 ## Installation
 1. Clone the repository:
