@@ -16,6 +16,7 @@ LOG_FILE="$LOG_DIR/tlsblockchain.log"                                      # Log
 BLOCKCHAIN_API="${BLOCKCHAIN_API:-https://api.blockchainhash.example/v1}"  # Default API endpoint
 MAX_RETRIES=3                                                              # Maximum retries for API calls
 RETRY_DELAY=2                                                              # Delay between retries (seconds)
+VAULT_PATH="secret/tls/private_keys"                                       # Vault path for private keys
 mkdir -p "$LOG_DIR"
 
 # Function to handle errors with context
@@ -67,6 +68,7 @@ load_config() {
         log_message "Loading configuration from $CONFIG_FILE..."
         BLOCKCHAIN_API=$(jq -r '.blockchain_api' "$CONFIG_FILE" 2>/dev/null || echo "$BLOCKCHAIN_API")
         LOG_DIR=$(jq -r '.log_dir' "$CONFIG_FILE" 2>/dev/null || echo "$LOG_DIR")
+        VAULT_PATH=$(jq -r '.vault_path' "$CONFIG_FILE" 2>/dev/null || echo "$VAULT_PATH")
         LOG_FILE="$LOG_DIR/tlsblockchain.log"
         mkdir -p "$LOG_DIR"
         log_message "Configuration loaded successfully."
@@ -182,8 +184,23 @@ log_message "Generated Certificate Hash: $CERT_HASH"
 # Step 5: Perform Action (Store or Verify)
 # ====================
 if [[ "$ACTION" == "store" ]]; then
+    # Fetch private key from Vault (optional step, e.g., for signing the hash)
+    fetch_private_key_from_vault "$VAULT_PATH"
+
     log_message "Storing hash on blockchain..."
     DATA="{\"hash\": \"$CERT_HASH\"}"
     send_request_with_retry "POST" "$BLOCKCHAIN_API/store" "$DATA"
     log_message "Hash successfully stored on blockchain."
-elif [[ "$ACTION"
+elif [[ "$ACTION" == "verify" ]]; then
+    log_message "Verifying hash on blockchain..."
+    DATA="{\"hash\": \"$CERT_HASH\"}"
+    send_request_with_retry "POST" "$BLOCKCHAIN_API/verify" "$DATA"
+    RESPONSE_STATUS=$(echo "$RESPONSE" | jq -r '.status' 2>/dev/null)
+    if [[ "$RESPONSE_STATUS" == "success" ]]; then
+        log_message "Hash verification succeeded."
+    else
+        handle_error "Hash Verification Failed" "The hash could not be verified on the blockchain."
+    fi
+fi
+
+log_message "$ACTION process completed successfully."
