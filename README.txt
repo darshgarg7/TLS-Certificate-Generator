@@ -1,6 +1,6 @@
 # TLS Certificate Generator
 
-This project automates the creation of TLS certificates using OpenSSL and integrates with modern tools like Let's Encrypt, Kubernetes, and HashiCorp Vault. It demonstrates advanced security practices, scalability, and innovation.
+This project automates the creation of TLS certificates using OpenSSL and integrates with modern tools like Kubernetes and HashiCorp Vault. It demonstrates advanced security practices, scalability, and innovation.
 
 ## Features
 Core Features
@@ -11,8 +11,7 @@ Advanced Security :
 - Certificate revocation using CRLs and OCSP.
 - Key rotation policies for expired or compromised keys. (Automated Annual Rotations, Email Notifications, and Certificate Validation.)
 - Comprehensive Testing : Automated tests for certificate validation, expiration, and SAN verification.
-Optional Features
-- Post-Quantum Cryptography : Experimental support using Open Quantum Safe (liboqs).
+Optional Features :
 - Blockchain-Based Certificate Hashing : Immutable records for auditing and compliance.
 
 
@@ -20,7 +19,6 @@ Optional Features
 - macOS or Linux
 - OpenSSL (Install via Homebrew: `brew install openssl`)
 - Docker and Kubernetes (optional)
-- Certbot for Let's Encrypt integration (`brew install certbot`)
 - Look through the files for areas where you have to add your own paths
 
 ## Installation
@@ -29,7 +27,7 @@ Optional Features
    cd TLS-Certificate_Generator
 
 2. Install dependencies:
-    brew install openssl certbot
+    brew install openssl
 
 ## Usage
 Generate a Root CA:
