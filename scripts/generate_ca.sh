@@ -1,10 +1,5 @@
 #!/bin/bash
-# ====================
-# Script: Generate CA Certificate
-# Description: Automates the generation of a self-signed CA certificate and private key.
-# Usage: ./scripts/generate_ca.sh [optional: CA_NAME] [optional: VALIDITY_DAYS]
-# ====================
-# Function to handle errors
+
 handle_error() {
     echo "Error: $1"
     exit 1
@@ -26,12 +21,12 @@ fi
 echo "Ensuring certificates directory exists..."
 mkdir -p "$CERTS_DIR" || handle_error "Failed to create directory: $CERTS_DIR"
 # ====================
-# Step 3: Generate CA Private Key
+# Step 3: Generate CA Private Key (RSA)
 # ====================
-echo "Generating CA private key using Dilithium2..."
+echo "Generating CA private key using RSA..."
 PRIVATE_KEY="$CERTS_DIR/ca.key"
 PASSPHRASE="${CA_PASSPHRASE:-MySecurePassword}"  # Default passphrase (override with env var)
-openssl genpkey -algorithm dilithium2 -out "$PRIVATE_KEY" || handle_error "Failed to generate CA private key."
+openssl genpkey -algorithm RSA -out "$PRIVATE_KEY" || handle_error "Failed to generate CA private key."
 echo "CA private key generated successfully: $PRIVATE_KEY"
 # ====================
 # Step 4: Initialize CA Database Files
