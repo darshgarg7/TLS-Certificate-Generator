@@ -1,99 +1,72 @@
 #!/bin/bash
-mkdir -p certs
+
 handle_error() {
     echo "Error: $1"
     exit 1
 }
 # ====================
-# Step 1: Generate Root CA
+# Step 1: Parse Input Arguments
 # ====================
-echo "=== Step 1: Generating Root CA ==="
-# Generate Root CA private key using Dilithium2
-openssl genpkey -algorithm dilithium2 -out certs/root-ca.key || handle_error "Failed to generate Root CA private key."
-openssl req -x509 -new -nodes \
-    -key certs/root-ca.key \
-    -sha256 \
-    -days 3650 \
-    -out certs/root-ca.crt \
-    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=My Root CA" \
-    -extensions v3_ca \
-    -config config/ca.cnf || handle_error "Failed to generate Root CA certificate."
-echo "Root CA certificate generated successfully: certs/root-ca.crt"
+CLIENT_NAME="${1:-Client}"         # Default client name: "Client"
+VALIDITY_DAYS="${2:-365}"          # Default validity: 365 days
+CERTS_DIR="certs"                  # Directory to store certificates
+INTERMEDIATE_CA_CERT="$CERTS_DIR/intermediate-ca.crt"  # Intermediate CA certificate
+INTERMEDIATE_CA_KEY="$CERTS_DIR/intermediate-ca.key"   # Intermediate CA private key
+
+# Validate input
+if [[ ! -f "$INTERMEDIATE_CA_CERT" || ! -f "$INTERMEDIATE_CA_KEY" ]]; then
+    handle_error "Intermediate CA files not found. Ensure certs/intermediate-ca.crt and certs/intermediate-ca.key exist."
+fi
+
+# Ensure certificates directory exists
+mkdir -p "$CERTS_DIR" || handle_error "Failed to create directory: $CERTS_DIR"
+
 # ====================
-# Step 2: Generate Intermediate CA
+# Step 2: Generate Client Private Key (RSA)
 # ====================
-echo "=== Step 2: Generating Intermediate CA ==="
-# Generate Intermediate CA private key using Dilithium2
-openssl genpkey -algorithm dilithium2 -out certs/intermediate-ca.key || handle_error "Failed to generate Intermediate CA private key."
-# Generate Intermediate CA CSR
+echo "Generating client private key using RSA..."
+CLIENT_KEY="$CERTS_DIR/client.key"
+openssl genpkey -algorithm RSA -out "$CLIENT_KEY" || handle_error "Failed to generate client private key."
+echo "Client private key generated successfully: $CLIENT_KEY"
+
+# ====================
+# Step 3: Generate Client CSR
+# ====================
+echo "Generating client Certificate Signing Request (CSR)..."
+CLIENT_CSR="$CERTS_DIR/client.csr"
 openssl req -new \
-    -key certs/intermediate-ca.key \
-    -out certs/intermediate-ca.csr \
-    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=My Intermediate CA" || handle_error "Failed to generate Intermediate CA CSR."
-# Sign Intermediate CA CSR with Root CA
+    -key "$CLIENT_KEY" \
+    -out "$CLIENT_CSR" \
+    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=$CLIENT_NAME" || handle_error "Failed to generate client CSR."
+echo "Client CSR generated successfully: $CLIENT_CSR"
+
+# ====================
+# Step 4: Sign Client CSR with Intermediate CA
+# ====================
+echo "Signing client CSR with Intermediate CA..."
+CLIENT_CERT="$CERTS_DIR/client.crt"
 openssl x509 -req \
-    -in certs/intermediate-ca.csr \
-    -CA certs/root-ca.crt \
-    -CAkey certs/root-ca.key \
+    -in "$CLIENT_CSR" \
+    -CA "$INTERMEDIATE_CA_CERT" \
+    -CAkey "$INTERMEDIATE_CA_KEY" \
     -CAcreateserial \
-    -out certs/intermediate-ca.crt \
-    -days 1825 \
-    -sha256 \
-    -extfile config/ca.cnf \
-    -extensions v3_intermediate_ca || handle_error "Failed to sign Intermediate CA certificate."
-echo "Intermediate CA certificate generated successfully: certs/intermediate-ca.crt"
+    -out "$CLIENT_CERT" \
+    -days "$VALIDITY_DAYS" \
+    -sha256 || handle_error "Failed to sign client certificate."
+echo "Client certificate generated successfully: $CLIENT_CERT"
+
 # ====================
-# Step 3: Generate Server Certificate
+# Step 5: Verify Client Certificate
 # ====================
-echo "=== Step 3: Generating Server Certificate ==="
-# Generate Server private key using Kyber512
-openssl genpkey -algorithm kyber512 -out certs/server.key || handle_error "Failed to generate Server private key."
-# Generate Server CSR
-openssl req -new \
-    -key certs/server.key \
-    -out certs/server.csr \
-    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=TLS-Certificate-Generator.local" \
-    -config config/server.ext || handle_error "Failed to generate Server CSR."
-# Sign Server CSR with Intermediate CA
-openssl x509 -req \
-    -in certs/server.csr \
-    -CA certs/intermediate-ca.crt \
-    -CAkey certs/intermediate-ca.key \
-    -CAcreateserial \
-    -out certs/server.crt \
-    -days 365 \
-    -sha256 \
-    -extfile config/server.ext \
-    -extensions server_cert || handle_error "Failed to sign Server certificate."
-echo "Server certificate generated successfully: certs/server.crt"
+echo "Verifying client certificate..."
+openssl x509 -in "$CLIENT_CERT" -text -noout || handle_error "Failed to verify client certificate."
+echo "Client certificate verification completed."
+
 # ====================
-# Step 4: Generate Wildcard Certificate
+# Step 6: Generate Full Chain for Client Certificate
 # ====================
-echo "=== Step 4: Generating Wildcard Certificate ==="
-# Generate Wildcard private key using Kyber512
-openssl genpkey -algorithm kyber512 -out certs/wildcard.key || handle_error "Failed to generate Wildcard private key."
-# Generate Wildcard CSR
-openssl req -new \
-    -key certs/wildcard.key \
-    -out certs/wildcard.csr \
-    -subj "/C=US/ST=California/L=San Francisco/O=TLS-Certificate-Generator/CN=*.myproject.local" \
-    -config config/server.ext || handle_error "Failed to generate Wildcard CSR."
-# Sign Wildcard CSR with Intermediate CA
-openssl x509 -req \
-    -in certs/wildcard.csr \
-    -CA certs/intermediate-ca.crt \
-    -CAkey certs/intermediate-ca.key \
-    -CAcreateserial \
-    -out certs/wildcard.crt \
-    -days 365 \
-    -sha256 \
-    -extfile config/server.ext \
-    -extensions server_cert || handle_error "Failed to sign Wildcard certificate."
-echo "Wildcard certificate generated successfully: certs/wildcard.crt"
-# ====================
-# Step 5: Generate Certificate Chain
-# ====================
-echo "=== Step 5: Generating Certificate Chain ==="
-cat certs/server.crt certs/intermediate-ca.crt certs/root-ca.crt > certs/fullchain.pem || handle_error "Failed to generate certificate chain."
-echo "Certificate chain generated successfully: certs/fullchain.pem"
-echo "All certificates generated successfully!"
+echo "Generating full certificate chain for client..."
+cat "$CLIENT_CERT" "$INTERMEDIATE_CA_CERT" "$CERTS_DIR/root-ca.crt" > "$CERTS_DIR/client-fullchain.pem" || handle_error "Failed to generate client full chain."
+echo "Client full certificate chain generated successfully: $CERTS_DIR/client-fullchain.pem"
+
+echo "Client certificate setup completed successfully!"
