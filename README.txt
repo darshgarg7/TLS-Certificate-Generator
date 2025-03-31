@@ -61,8 +61,31 @@ Automate Certificate Issuance:
 
 
 Manage revoked certificates:  
- - chmod +x scripts/revoked_certs.sh
- - ./scripts/revoked_certs.sh
+
+for apple silicon mac go to:
+- /opt/homebrew/etc/nginx/nginx.conf
+- nano /usr/local/etc/nginx/nginx.conf
+   and paste the following:
+
+server {
+    listen 443 ssl;
+    server_name TLS-Certificate-Generator.local;
+
+    ssl_certificate /Users/darshgarg7/TLS-Certificate-Generator/certs/server.crt;
+    ssl_certificate_key /Users/darshgarg7/TLS-Certificate-Generator/certs/server.key;
+    ssl_crl /Users/darshgarg7/TLS-Certificate-Generator/certs/crl.pem;
+
+    location / {
+        proxy_pass http://localhost:8080;
+    }
+}
+save & exit: Ctrl + O, then Ctrl + X
+then run:
+- nginx -t (nginx: configuration file /opt/homebrew/etc/nginx/nginx.conf test is successful)
+- brew services restart nginx
+- brew services list (verify NGINX is running)
+- chmod +x scripts/revoked_certs.sh
+- ./scripts/revoked_certs.sh
 
 ## Testing
 Run the test script to validate the certificate generation process:
@@ -77,17 +100,17 @@ To verify the generated CA certificate using OpenSSL:
 - SAN Validation: ensure subject alternative names are correct
 - mTLS Handshake: test mutual tls authentication
 
-### Blockchain-Based Certificate Hashing (Experimental) ###
+### Blockchain-Based Certificate Hashing (Experimental)
 
 This project includes an experimental feature for hashing certificates and storing them on a blockchain.
 This ensures immutability and transparency for certificate verification.
 
-    #### Usage ###
+    #### Usage
 
-    1. **Store a Hash**:
+    1. Store a Hash:
     ./scripts/blockchain_hash.sh store certs/ca.crt
 
-    2. **Verify a Hash**:
+    2. Verify a Hash:
     ./scripts/blockchain_hash.sh verify certs/ca.crt
 
 ## Deployment
@@ -122,25 +145,25 @@ testssl.sh https://TLS-Certificate_Generator.local
 -----------------------------------------------------------------
 -----------------------------------------------------------------
 
-### **How to Navigate the Project**
+### How to Navigate the Project
 
-1. **Understand the Diagram**:
+1. Understand the Diagram:
    - Start by reviewing the Mermaid.js diagram to understand the flow of the project.
 
-2. **Set Up the Environment**:
-   - Follow the **Installation** section to set up dependencies.
+2. Set Up the Environment:
+   - Follow the Installation section to set up dependencies.
 
-3. **Generate Certificates**:
+3. Generate Certificates:
    - Use the scripts (`generate_ca.sh`, `generate_cert.sh`) to create certificates.
 
-4. **Deploy to Kubernetes**:
+4. Deploy to Kubernetes:
    - Apply the Kubernetes manifests to deploy certificates to a cluster.
 
-5. **Explore Optional Features**:
+5. Explore Optional Features:
    - Experiment with integrations like Let's Encrypt, HashiCorp Vault, and experimental features.
 
-6. **Test and Validate**:
+6. Test and Validate:
    - Run the automated tests and perform a security audit.
 
-7. **Clean Up**:
+7. Clean Up:
    - Use the cleanup script to remove generated files.
