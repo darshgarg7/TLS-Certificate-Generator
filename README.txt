@@ -39,6 +39,7 @@ Generate a Root CA:
     ./scripts/generate_ca.sh
 
 Generate a server certificate (RSA):
+     chmod +x scripts/generate_cert.sh
     ./scripts/generate_cert.sh
 
 Automate certificate issuance with Let's Encrypt:
